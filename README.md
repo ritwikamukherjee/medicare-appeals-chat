@@ -98,4 +98,4 @@ medicare-appeals-chat/
 
 ## License
 
-MIT
+Databricks license (see [`LICENSE`](LICENSE)) — same as the [Databricks Industry Solutions](https://github.com/databricks-industry-solutions) accelerators (e.g. [x12-edi-parser / Ember](https://github.com/databricks-industry-solutions/x12-edi-parser)). Use of these materials is permitted in connection with your use of the Databricks Services.
