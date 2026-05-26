@@ -1,0 +1,51 @@
+bundle:
+  name: medicare-appeals-demo
+
+variables:
+  catalog:
+    description: Unity Catalog name to land all demo assets under
+    default: medicare_appeals_demo
+
+  schema:
+    description: Schema under the catalog (no dashes — UC functions don't tolerate dashes the same way)
+    default: appeals_review
+
+  warehouse_id:
+    description: SQL warehouse ID used by the data pipeline, UC functions, and Genie
+    default: ""
+
+  genie_space_id:
+    description: Genie space ID created by genie/create_genie_space.py (filled in after stage 2)
+    default: ""
+
+  mas_endpoint_name:
+    description: Serving endpoint name of the Multi-Agent Supervisor (filled in after stage 3)
+    default: ""
+
+  pubmed_mcp_token:
+    description: Bearer token for the openpharma PubMed MCP server on glama.ai
+    default: ""
+
+  partd_mcp_token:
+    description: Bearer token for the Medicare Part D MCP server
+    default: ""
+
+  clinicaltrials_mcp_token:
+    description: Bearer token for the ClinicalTrials.gov MCP server (placeholder OK if auth=none)
+    default: ""
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://your-workspace.cloud.databricks.com
+
+  prod:
+    mode: production
+    workspace:
+      host: https://your-workspace.cloud.databricks.com
+      root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}

@@ -1,0 +1,18 @@
+resources:
+  pipelines:
+    appeals_data_pipeline:
+      name: medicare-appeals-data-pipeline
+      catalog: ${var.catalog}
+      target: ${var.schema}
+      development: true
+      continuous: false
+      libraries:
+        - file:
+            path: ../data/pipeline.py
+      configuration:
+        appeals.catalog: ${var.catalog}
+        appeals.schema: ${var.schema}
+        appeals.volume_path: /Volumes/${var.catalog}/raw/landing
+      serverless: true
+      photon: true
+      channel: CURRENT

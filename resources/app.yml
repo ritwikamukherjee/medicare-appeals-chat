@@ -1,0 +1,39 @@
+resources:
+  apps:
+    medicare_appeals_chat:
+      name: medicare-appeals-chat
+      description: "Medicare appeals triage chat app — wraps the AB Multi-Agent Supervisor"
+      source_code_path: ../app
+
+      resources:
+        - name: mas-endpoint
+          serving_endpoint:
+            name: ${var.mas_endpoint_name}
+            permission: CAN_QUERY
+
+        - name: genie-space
+          genie_space:
+            space_id: ${var.genie_space_id}
+            permission: CAN_RUN
+
+        - name: connection-pubmed
+          uc_securable:
+            securable_full_name: conn_aichemy_pubmed
+            securable_type: CONNECTION
+            permission: USE_CONNECTION
+
+        - name: connection-partd
+          uc_securable:
+            securable_full_name: raven_medicare_mcp
+            securable_type: CONNECTION
+            permission: USE_CONNECTION
+
+        - name: connection-clinicaltrials
+          uc_securable:
+            securable_full_name: conn_clinicaltrials
+            securable_type: CONNECTION
+            permission: USE_CONNECTION
+
+      user_api_scopes:
+        - iam.current-user:read
+        - iam.access-control:read

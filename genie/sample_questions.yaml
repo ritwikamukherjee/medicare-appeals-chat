@@ -1,0 +1,23 @@
+sample_questions:
+  - question: "How many open appeals cases do we have?"
+    guideline: "Count rows in appeals where appeal_status IN ('Submitted','Under Review')."
+  - question: "What are the top 5 denial reasons last quarter?"
+    guideline: "Aggregate claims by denial_reason for service_date in the last 90 days."
+  - question: "Show me appeals overturn rate by state."
+    guideline: "Join appeals to members, group by state, compute SUM(is_overturned)/COUNT(*)."
+  - question: "Which providers have a denial rate significantly above their specialty peers?"
+    guideline: "Use provider_risk_metrics; flag where denial_rate > 1.5 * specialty median."
+  - question: "How many WA members failed state eligibility corroboration?"
+    guideline: "Filter state_eligibility_corroboration where corroboration_status != 'CORROBORATED'."
+  - question: "What is GLP-1 prior auth approval rate by drug?"
+    guideline: "Use glp1_utilization_metrics; show pa_approval_rate by brand."
+  - question: "Which Salesforce PCI cases are still open from last month?"
+    guideline: "Filter salesforce_cases where case_type='PCI' AND status NOT IN ('Resolved','Closed')."
+
+curation_instructions: |
+  Routing hints for the Genie space:
+  - Always join through member_id when correlating across members/eligibility/claims/appeals.
+  - When the user asks about state corroboration, use state_eligibility_corroboration directly.
+  - When the user asks about provider performance, use provider_risk_metrics.
+  - When the user asks about denials trends, prefer claim_denials_metrics or pbi_claims_metrics.
+  - For currency totals, always SUM(billed_amount/paid_amount/allowed_amount) — never average raw rows.

@@ -1,0 +1,78 @@
+resources:
+  jobs:
+    bootstrap_job:
+      name: medicare-appeals-bootstrap
+      description: "One-shot job: generate data, register UC fns + MCP connections, create Genie + MAS."
+      tasks:
+        # ---- Stage 1: Synthetic data into a UC Volume ----------------------
+        - task_key: generate_synthetic_data
+          notebook_task:
+            notebook_path: ../scripts/notebook_generate_data.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+          new_cluster:
+            spark_version: 15.4.x-scala2.12
+            num_workers: 0
+            data_security_mode: SINGLE_USER
+            kind: CLASSIC_PREVIEW
+            node_type_id: m5d.large
+
+        # ---- Stage 2: Run the Lakeflow Declarative Pipeline -----------------
+        - task_key: run_pipeline
+          depends_on:
+            - task_key: generate_synthetic_data
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.appeals_data_pipeline.id}
+            full_refresh: true
+
+        # ---- Stage 3: Register UC functions ---------------------------------
+        - task_key: register_uc_functions
+          depends_on:
+            - task_key: run_pipeline
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../uc_functions/01_member_appeal_brief.sql
+              source: WORKSPACE
+
+        - task_key: register_uc_functions_2
+          depends_on:
+            - task_key: register_uc_functions
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../uc_functions/02_claim_investigation_summary.sql
+              source: WORKSPACE
+
+        # ---- Stage 4: Create the 3 MCP connections --------------------------
+        - task_key: create_mcp_connections
+          depends_on:
+            - task_key: register_uc_functions_2
+          sql_task:
+            warehouse_id: ${var.warehouse_id}
+            file:
+              path: ../mas/create_mcp_connections.sql
+              source: WORKSPACE
+
+        # ---- Stage 5: Create the Genie space --------------------------------
+        - task_key: create_genie_space
+          depends_on:
+            - task_key: create_mcp_connections
+          notebook_task:
+            notebook_path: ../scripts/notebook_create_genie.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              warehouse_id: ${var.warehouse_id}
+
+        # ---- Stage 6: Create the MAS ----------------------------------------
+        - task_key: create_mas
+          depends_on:
+            - task_key: create_genie_space
+          notebook_task:
+            notebook_path: ../scripts/notebook_create_mas.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+              # GENIE_SPACE_ID is read from the previous task's output via task value

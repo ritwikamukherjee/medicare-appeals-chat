@@ -1,0 +1,15 @@
+command:
+  - "python"
+  - "-m"
+  - "uvicorn"
+  - "app:app"
+  - "--host"
+  - "0.0.0.0"
+  - "--port"
+  - "8000"
+env:
+  # These are templated by the DAB at bundle deploy time (see resources/app.yml).
+  - name: MAS_ENDPOINT_NAME
+    valueFrom: "mas_endpoint_name"
+  - name: WAREHOUSE_ID
+    valueFrom: "warehouse_id"
