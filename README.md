@@ -98,4 +98,10 @@ medicare-appeals-chat/
 
 ## License
 
-Databricks license (see [`LICENSE`](LICENSE)) — same as the [Databricks Industry Solutions](https://github.com/databricks-industry-solutions) accelerators (e.g. [x12-edi-parser / Ember](https://github.com/databricks-industry-solutions/x12-edi-parser)). Use of these materials is permitted in connection with your use of the Databricks Services.
+Databricks license — see [`LICENSE`](LICENSE).
+
+This repo is a **solution accelerator**.
+
+> **DISCLAIMER:** This is for reference and not meant to be for production environments. There is no SLA nor continued support as this is not an official Databricks asset. For more information, please contact your representative.
+
+> **NOTE:** This repo works on **AWS Databricks** currently and would need slight configuration changes for Azure and GCP.
