@@ -78,7 +78,7 @@ databricks bundle run medicare_appeals_chat --target dev
 ## Repo layout
 
 ```
-medicare-appeals-demo/
+medicare-appeals-chat/
 ├── databricks.yml              DAB top-level + variables
 ├── resources/                  DAB resource specs (pipeline, jobs, app)
 ├── data/                       Synthetic data generator + LDP definitions

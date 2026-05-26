@@ -1,5 +1,5 @@
 bundle:
-  name: medicare-appeals-demo
+  name: medicare-appeals-chat
 
 variables:
   catalog:

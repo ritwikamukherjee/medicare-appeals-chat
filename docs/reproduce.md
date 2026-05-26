@@ -9,8 +9,8 @@ For someone who's never seen this repo. Assumes:
 ## 0. Clone + install CLI
 
 ```bash
-git clone https://github.com/ritwikamukherjee/medicare-appeals-demo.git
-cd medicare-appeals-demo
+git clone https://github.com/ritwikamukherjee/medicare-appeals-chat.git
+cd medicare-appeals-chat
 
 # Databricks CLI (if you don't already have it)
 curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sudo sh
