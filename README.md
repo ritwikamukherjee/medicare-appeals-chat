@@ -51,7 +51,7 @@ flowchart LR
 ```bash
 # 0. Prereqs: Databricks CLI v0.260+ authenticated against your workspace, a SQL warehouse, and a UC catalog you can create.
 
-# 1. Configure
+# 1. Configure (see "Required configuration" below)
 cp databricks.yml databricks.local.yml   # optional override file
 # Edit databricks.yml — set workspace.host, catalog, schema, warehouse_id, MCP bearer tokens.
 
@@ -65,6 +65,31 @@ databricks bundle run bootstrap_job --target dev
 # 4. Open the deployed app
 databricks bundle run medicare_appeals_chat --target dev
 ```
+
+## Required configuration
+
+Before `databricks bundle deploy`, set these variables in `databricks.yml` (or in a `databricks.local.yml` override). The app reads `catalog` and `schema` at runtime through the env vars `CATALOG` and `SCHEMA` that the bundle templates into `app/app.yaml`.
+
+| Variable | Required | Notes |
+|---|---|---|
+| `catalog` | Yes | Unity Catalog name where the demo's tables, MV, UC functions, and Genie space will live. Must be a valid UC identifier. Default: `medicare_appeals_demo`. |
+| `schema` | Yes | Schema name under the catalog. **Use underscores, not dashes** — UC functions and some downstream tooling don't tolerate dashed schema names the same way managed tables do. Default: `appeals_review`. |
+| `warehouse_id` | Yes | SQL warehouse used by the data pipeline, UC functions, the app's `/api/summary` endpoint, and Genie. The SP that runs the deployed app must have `CAN_USE` on this warehouse. |
+| `genie_space_id` | After stage 2 | Output of `genie/create_genie_space.py`. Paste it back into `databricks.yml` before re-deploying the MAS and app. |
+| `mas_endpoint_name` | After stage 3 | Output of `mas/create_mas.py` (or the AB MAS UI). Paste it back into `databricks.yml` before re-deploying the app. |
+| `pubmed_mcp_token`, `partd_mcp_token`, `clinicaltrials_mcp_token` | Yes for MCP routing | Bearer tokens stored in the UC connections. Leave `clinicaltrials_mcp_token` as a placeholder if the upstream server allows `auth.mode=none`. |
+
+The service principal that runs the deployed app needs at minimum:
+
+- `USE_CATALOG` on `<catalog>`
+- `USE_SCHEMA` on `<catalog>.<schema>`
+- `SELECT` on all tables under `<catalog>.<schema>`
+- `EXECUTE` on the two UC functions (`member_appeal_brief`, `claim_investigation_summary`)
+- `CAN_USE` on the warehouse named by `warehouse_id`
+- `CAN_RUN` on the Genie space named by `genie_space_id`
+- `CAN_QUERY` on the MAS serving endpoint
+
+`databricks bundle deploy` grants the app-resource permissions automatically; the catalog, schema, and warehouse grants need to exist beforehand or be granted manually after bootstrap.
 
 ## What gets provisioned
 
