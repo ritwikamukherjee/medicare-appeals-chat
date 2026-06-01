@@ -8,12 +8,12 @@ command:
   - "--port"
   - "8000"
 env:
-  # These are templated by the DAB at bundle deploy time (see resources/app.yml / databricks.yml).
+  # Substituted by the DAB at bundle deploy time using databricks.yml variables.
   - name: MAS_ENDPOINT_NAME
-    valueFrom: "mas_endpoint_name"
+    value: "${var.mas_endpoint_name}"
   - name: WAREHOUSE_ID
-    valueFrom: "warehouse_id"
+    value: "${var.warehouse_id}"
   - name: CATALOG
-    valueFrom: "catalog"
+    value: "${var.catalog}"
   - name: SCHEMA
-    valueFrom: "schema"
+    value: "${var.schema}"
