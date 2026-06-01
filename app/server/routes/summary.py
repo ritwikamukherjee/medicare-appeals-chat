@@ -12,9 +12,12 @@ from server.config import get_serving_credentials
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-WAREHOUSE_ID = os.environ.get("WAREHOUSE_ID", "4b28691c780d9875")
-SCHEMA = "hls_amer_catalog.`appeals-review`"
-DASHBOARD_URL = "https://fe-vm-hls-amer.cloud.databricks.com/dashboardsv3/01f13f533fd910698aa393a23af4b390/published?isDbOne=true&utm_source=databricks-one&o=1602460480284688"
+WAREHOUSE_ID = os.environ.get("WAREHOUSE_ID", "")
+CATALOG = os.environ.get("CATALOG", "medicare_appeals_demo")
+SCHEMA_NAME = os.environ.get("SCHEMA", "appeals_review")
+# Backtick both to tolerate dashes or reserved words in either identifier.
+SCHEMA = f"`{CATALOG}`.`{SCHEMA_NAME}`"
+DASHBOARD_URL = os.environ.get("DASHBOARD_URL", "")
 
 QUERIES = {
     "kpis": f"""

@@ -8,6 +8,7 @@ venv/
 .env.local
 node_modules/
 dist/
+!app/frontend/dist/
 build/
 *.egg-info/
 .DS_Store
